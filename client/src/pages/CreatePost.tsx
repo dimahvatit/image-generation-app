@@ -38,10 +38,18 @@ const CreatePost = () => {
                         "Content-type": "application/json"
                     },
                     body: JSON.stringify({ prompt: form.prompt })
-                })
+                });
+
+                const data = await response.json();
+
+                setForm({ ...form, photo: `data:image/jpeg;base64,${data.photo}`})
             } catch (err) {
                 console.log(err);
+            } finally {
+                setGeneratingImg(false);
             }
+        } else {
+            alert("Please enter a prompt");
         }
     };
 
@@ -102,6 +110,7 @@ const CreatePost = () => {
                 <div className="mt-5 flex gap-5">
                     <button type="button"
                             onClick={generateImage}
+                            disabled={generatingImg}
                             className="text-white bg-green-700 font-medium
                             rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center
                             hover:bg-green-600 active:bg-green-800 transition background-color">
