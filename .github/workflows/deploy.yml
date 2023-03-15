@@ -1,0 +1,47 @@
+name: Deploy app
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install server dependencies
+      run: npm install
+      working-directory: ./server/
+
+    - name: Build server
+      run: npm run build
+      working-directory: ./server/
+
+    - name: Start server
+      run: npm start
+      working-directory: ./server/
+      background: true
+
+    - name: Install client dependencies
+      run: npm install
+      working-directory: ./client/
+
+    - name: Build client
+      run: npm run build
+      working-directory: ./client/
+
+    - name: Start client
+      run: npm start
+      working-directory: ./client/
+      background: true
+
+    - name: Wait for server and client
+      run: |
+        until $(curl --output /dev/null --silent --head --fail http://localhost:5000) && $(curl --output /dev/null --silent --head --fail http://localhost:3000); do
+          printf '.'
+          sleep 5
+        done
