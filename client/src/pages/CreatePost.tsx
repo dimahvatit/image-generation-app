@@ -26,7 +26,7 @@ const CreatePost = () => {
 			setLoading(true);
 			try {
 				const response = await fetch(
-					`${process.env.RENDER_EXTERNAL_URL}/api/v1/post/`,
+					"https://image-generation-server.onrender.com/api/v1/post",
 					{
 						method: 'POST',
 						headers: {
@@ -62,7 +62,7 @@ const CreatePost = () => {
 			try {
 				setGeneratingImg(true);
 				const response = await fetch(
-					`${process.env.RENDER_EXTERNAL_URL}/api/v1/dalle`,
+					"https://image-generation-server.onrender.com/api/v1/dalle",
 					{
 						method: 'POST',
 						headers: {

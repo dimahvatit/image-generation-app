@@ -43,7 +43,7 @@ const Home = () => {
 
 			try {
 				const response = await fetch(
-					`${process.env.RENDER_EXTERNAL_URL}/api/v1/post`,
+					"https://image-generation-server.onrender.com/api/v1/post",
 					{
 						method: 'GET',
 						headers: {
