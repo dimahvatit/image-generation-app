@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon index.ts",
     "tsc": "tsc",
-    "start:prod": "node build/index.js",
+    "start:prod": "tsc && node build/index.js",
     "clear": "rimraf build"
   },
   "keywords": [],
