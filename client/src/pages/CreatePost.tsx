@@ -3,6 +3,9 @@ import {useNavigate} from "react-router-dom";
 import {preview} from "../assets";
 import {getRandomPrompt} from "../utils";
 import {Loader, FormField} from "./../components";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const CreatePost = () => {
     const navigate = useNavigate();

@@ -1,5 +1,8 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
 import { Loader, Card, FormField } from "../components";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 type RenderCardsProps = {
     data: Array<typeof Card>;

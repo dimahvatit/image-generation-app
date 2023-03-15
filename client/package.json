@@ -11,6 +11,8 @@
     "clear": "rimraf build && rimraf dist"
   },
   "dependencies": {
+    "@types/dotenv": "^8.2.0",
+    "dotenv": "^16.0.3",
     "file-saver": "^2.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
