@@ -3,7 +3,6 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "/image-generation-app",
   "scripts": {
     "dev": "vite --port 5500",
     "build": "vite build",
