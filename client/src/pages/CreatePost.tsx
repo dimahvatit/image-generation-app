@@ -5,7 +5,7 @@ import {getRandomPrompt} from "../utils";
 import {Loader, FormField} from "./../components";
 
 const CreatePost = () => {
-    const navigation = useNavigate();
+    const navigate = useNavigate();
     const [form, setForm] = useState({
         name: "",
         prompt: "",
@@ -14,9 +14,30 @@ const CreatePost = () => {
     const [generatingImg, setGeneratingImg] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault();
-        console.log("Form submitted", event);
+
+        if (form.prompt && form.photo) {
+            setLoading(true);
+            try {
+                const response = await fetch("http://127.0.0.1:8080/api/v1/post/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(form)
+                })
+
+                await response.json();
+                navigate('/');
+            } catch (err) {
+                alert(err);
+            } finally {
+                setLoading(false);
+            }
+        } else {
+            alert("Please enter a prompt and generate an image");
+        }
     };
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {

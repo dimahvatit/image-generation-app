@@ -1,14 +1,21 @@
-import React, {useState, useEffect} from "react";
-import {Loader, Card, FormField} from "../components";
+import React, { useState, useEffect, ChangeEvent } from "react";
+import { Loader, Card, FormField } from "../components";
 
 type RenderCardsProps = {
-    data: Array<any>;
+    data: Array<typeof Card>;
     title: string;
 };
 
+type Post = {
+    _id: string;
+    name: string;
+    prompt: string;
+    photo: string;
+}
+
 function RenderCards({data, title}: RenderCardsProps): any {
     if (data?.length > 0) {
-        return data.map((post: any) => <Card key={post.id} {...post} />);
+        return data.map((post: any) => <Card {...post} key={post._id}/>);
     }
 
     return (
@@ -20,8 +27,51 @@ function RenderCards({data, title}: RenderCardsProps): any {
 
 const Home = () => {
     const [loading, setloading] = useState(false);
-    const [allposts, setAllposts] = useState(null);
+    const [allPosts, setAllposts] = useState([]);
     const [searchText, setSearchText] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
+    const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null);
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            setloading(true);
+
+            try {
+                const response = await fetch("http://127.0.0.1:8080/api/v1/post", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+
+                    setAllposts(result.data.reverse());
+                }
+            } catch (err: any) {
+                alert(err.message);
+            } finally {
+                setloading(false);
+            }
+        };
+
+        fetchPosts();
+    }, []);
+
+    const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
+        if (searchTimeout) {
+            clearTimeout(searchTimeout);
+        }
+        setSearchText(event.target.value);
+        setSearchTimeout(
+            setTimeout(() => {
+                const filteredPosts = allPosts.filter((post: Post) => post.prompt.toLowerCase().includes(searchText.toLowerCase()) ||
+                    post.name.toLowerCase().includes(searchText.toLowerCase()));
+                setSearchResults(filteredPosts);
+            }, 500)
+        )
+    };
 
     return (
         <section className="max-w-7xl mx-auto">
@@ -36,7 +86,13 @@ const Home = () => {
             </div>
 
             <div className="mt-16">
-                {/* <FormField /> */}
+                <FormField labelName="Search posts"
+                           type="text"
+                           name="text"
+                           placeholder="Search something..."
+                           value={searchText}
+                           handleChange={handleSearchChange}
+                />
             </div>
 
             <div className="mt-10">
@@ -57,10 +113,10 @@ const Home = () => {
                         )}
                         <div className="grid lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 gap-3">
                             {searchText ? (
-                                <RenderCards data={[]} title="No search results found"
+                                <RenderCards data={searchResults} title="No search results found"
                                 />
                             ) : (
-                                <RenderCards data={[]} title="No posts found"/>
+                                <RenderCards data={allPosts} title="No posts found"/>
                             )}
                         </div>
                     </>
